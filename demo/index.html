@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoPayments SDK Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    
+    .subtitle {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+    
+    .demo-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    
+    @media (max-width: 900px) {
+      .demo-section {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .card {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(71, 85, 105, 0.5);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #f1f5f9;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(71, 85, 105, 0.5);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .code-block {
+      background: #0f172a;
+      border: 1px solid rgba(71, 85, 105, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+    
+    .code-block pre {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+    
+    .code-block .comment {
+      color: #64748b;
+    }
+    
+    .code-block .keyword {
+      color: #c084fc;
+    }
+    
+    .code-block .string {
+      color: #34d399;
+    }
+    
+    .code-block .function {
+      color: #60a5fa;
+    }
+    
+    .code-block .property {
+      color: #fbbf24;
+    }
+    
+    .log-container {
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .log-container h3 {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .log-entry {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+    }
+    
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    
+    .log-entry.success {
+      color: #34d399;
+    }
+    
+    .log-entry.error {
+      color: #f87171;
+    }
+    
+    .log-entry.info {
+      color: #60a5fa;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      margin-left: 8px;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 20px;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+    
+    footer a {
+      color: #10b981;
+      text-decoration: none;
+    }
+    
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CryptoPayments SDK</h1>
+      <p class="subtitle">Test the embeddable payment widget integration</p>
+    </header>
+    
+    <div class="demo-section">
+      <!-- Configuration Panel -->
+      <div class="card">
+        <h2>⚙️ Configuration</h2>
+        
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <input type="text" id="apiKey" value="pk_test_demo123" placeholder="pk_live_xxx">
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" value="0.001" step="0.0001" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="currency">Currency</label>
+          <select id="currency">
+            <option value="ETH">ETH (Ethereum)</option>
+            <option value="USDT">USDT (Tether)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="network">Network</label>
+          <select id="network">
+            <option value="Sepolia Testnet">Sepolia Testnet</option>
+            <option value="TRC20">TRC20 (Tron)</option>
+            <option value="ERC20">ERC20 (Ethereum)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="orderId">Order ID (optional)</label>
+          <input type="text" id="orderId" value="order_12345" placeholder="Your order reference">
+        </div>
+        
+        <button class="btn btn-primary" onclick="openPayment()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+          Open Payment Modal
+        </button>
+        
+        <div class="log-container">
+          <h3>Event Log</h3>
+          <div id="eventLog">
+            <div class="log-entry info">Ready to test...</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Code Example -->
+      <div class="card">
+        <h2>📝 Integration Code <span class="badge">Copy & Paste</span></h2>
+        
+        <div class="code-block">
+          <pre><span class="comment">// 1. Include the SDK</span>
+<span class="keyword">&lt;script</span> <span class="property">src</span>=<span class="string">"https://pay.example.com/sdk.js"</span><span class="keyword">&gt;&lt;/script&gt;</span>
+
+<span class="comment">// 2. Initialize with your API key</span>
+<span class="function">CryptoPayments</span>.<span class="function">init</span>({
+  <span class="property">apiKey</span>: <span class="string">'pk_live_xxx'</span>,
+  <span class="property">debug</span>: <span class="keyword">true</span>
+});
+
+<span class="comment">// 3. Open payment modal</span>
+<span class="function">CryptoPayments</span>.<span class="function">openPayment</span>({
+  <span class="property">amount</span>: <span class="string">100</span>,
+  <span class="property">currency</span>: <span class="string">'USDT'</span>,
+  <span class="property">network</span>: <span class="string">'TRC20'</span>,
+  <span class="property">orderId</span>: <span class="string">'order_abc123'</span>,
+  
+  <span class="property">onSuccess</span>: (result) => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">'Paid!'</span>, result.txHash);
+    <span class="comment">// Redirect to success page</span>
+  },
+  
+  <span class="property">onClose</span>: () => {
+    <span class="function">console</span>.<span class="function">log</span>(<span class="string">'Modal closed'</span>);
+  },
+  
+  <span class="property">onError</span>: (err) => {
+    <span class="function">console</span>.<span class="function">error</span>(<span class="string">'Error:'</span>, err);
+  }
+});</pre>
+        </div>
+        
+        <div style="margin-top: 24px;">
+          <h2>🚀 Quick Start</h2>
+          <ol style="margin-top: 16px; padding-left: 20px; color: #94a3b8; line-height: 2;">
+            <li>Start the test backend: <code style="background: #0f172a; padding: 2px 8px; border-radius: 4px;">cd payment-sdk-test-back && npm start</code></li>
+            <li>Start the widget dev server: <code style="background: #0f172a; padding: 2px 8px; border-radius: 4px;">npm run dev:widget</code></li>
+            <li>Open this demo page in browser</li>
+            <li>Click "Open Payment Modal" to test</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>CryptoPayments SDK v1.0.0 | <a href="#">Documentation</a> | <a href="#">GitHub</a></p>
+    </footer>
+  </div>
+
+  <!-- Load SDK from local development -->
+  <script type="module">
+    // Import SDK for local development
+    import CryptoPayments from '../src/sdk.ts';
+    
+    // Make it globally available
+    window.CryptoPayments = CryptoPayments;
+    
+    // Initialize SDK
+    CryptoPayments.init({
+      apiKey: 'pk_test_demo123',
+      apiUrl: 'http://localhost:3000',
+      widgetUrl: 'http://localhost:5174',
+      debug: true
+    });
+    
+    log('SDK initialized', 'success');
+    
+    // Make openPayment globally available
+    window.openPayment = function() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      const currency = document.getElementById('currency').value;
+      const network = document.getElementById('network').value;
+      const orderId = document.getElementById('orderId').value;
+      
+      log(`Opening payment: ${amount} ${currency}`, 'info');
+      
+      CryptoPayments.openPayment({
+        amount,
+        currency,
+        network,
+        orderId: orderId || undefined,
+        
+        onSuccess: (result) => {
+          log(`✅ Payment successful! TX: ${result.txHash}`, 'success');
+          console.log('Payment result:', result);
+        },
+        
+        onClose: () => {
+          log('Modal closed by user', 'info');
+        },
+        
+        onError: (err) => {
+          log(`❌ Error: ${err.message}`, 'error');
+          console.error('Payment error:', err);
+        },
+        
+        onExpire: () => {
+          log('⏰ Payment expired', 'error');
+        }
+      });
+    };
+    
+    // Logging helper
+    window.log = function(message, type = 'info') {
+      const logContainer = document.getElementById('eventLog');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logContainer.insertBefore(entry, logContainer.firstChild);
+      
+      // Keep only last 10 entries
+      while (logContainer.children.length > 10) {
+        logContainer.removeChild(logContainer.lastChild);
+      }
+    };
+  </script>
+</body>
+</html>
+
