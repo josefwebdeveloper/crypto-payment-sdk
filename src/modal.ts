@@ -175,15 +175,11 @@ export function openModal(
   window.addEventListener('message', handleMessage);
 
   // When iframe loads, send init data (without callbacks - they can't be cloned)
+  // Note: API config is already in URL params, so postMessage is mainly for confirmation
   iframe.addEventListener('load', () => {
-    const { onSuccess, onClose, onError, onExpire, ...serializableOptions } = options;
-    iframe.contentWindow?.postMessage(
-      {
-        type: 'CRYPTO_PAY_INIT',
-        payload: serializableOptions,
-      } as WidgetMessage,
-      '*'
-    );
+    // Don't send postMessage init - rely on URL params instead
+    // This avoids issues with missing apiKey/apiUrl in the payload
+    loading.style.display = 'none';
   });
 
   // Build DOM

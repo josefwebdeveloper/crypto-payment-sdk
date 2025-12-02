@@ -11,11 +11,17 @@ const POLLING_INTERVAL = 5000;
 function getConfigFromUrl(): PaymentConfig | null {
   const params = new URLSearchParams(window.location.search);
   
+  console.log('[Widget] URL search:', window.location.search);
+  console.log('[Widget] Parsed params:', Object.fromEntries(params.entries()));
+  
   const amount = params.get('amount');
   const apiKey = params.get('apiKey');
   const apiUrl = params.get('apiUrl');
   
+  console.log('[Widget] apiUrl from params:', apiUrl);
+  
   if (!amount || !apiKey || !apiUrl) {
+    console.warn('[Widget] Missing params - amount:', amount, 'apiKey:', apiKey, 'apiUrl:', apiUrl);
     return null;
   }
   
@@ -49,28 +55,17 @@ function App() {
   const pollIntervalRef = useRef<number | null>(null);
   const paymentIdRef = useRef<string | null>(null);
 
-  // Initialize from URL params or postMessage
+  // Initialize from URL params
   useEffect(() => {
     const urlConfig = getConfigFromUrl();
     
     if (urlConfig) {
+      console.log('[Widget] Config from URL:', urlConfig);
       setConfig(urlConfig);
       setApiConfig(urlConfig.apiKey, urlConfig.apiUrl);
+    } else {
+      console.warn('[Widget] No config found in URL params');
     }
-    
-    // Also listen for init message from parent
-    const handleMessage = (event: MessageEvent) => {
-      const message = event.data as WidgetMessage;
-      
-      if (message?.type === 'CRYPTO_PAY_INIT' && message.payload) {
-        const payload = message.payload as PaymentConfig;
-        setConfig(payload);
-        setApiConfig(payload.apiKey, payload.apiUrl);
-      }
-    };
-    
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   // Create payment when config is ready
