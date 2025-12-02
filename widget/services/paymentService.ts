@@ -69,14 +69,13 @@ export const getPaymentDetails = async (paymentId: string): Promise<PaymentDetai
   return res.json();
 };
 
-export const checkPaymentStatus = async (paymentId?: string): Promise<PaymentStatusResponse> => {
+export const checkPaymentStatus = async (_paymentId?: string): Promise<PaymentStatusResponse> => {
   if (!apiConfig) {
     throw new Error('API not configured');
   }
 
-  const url = paymentId 
-    ? `${apiConfig.apiUrl}/api/payment/${paymentId}/status`
-    : `${apiConfig.apiUrl}/api/payment/status`;
+  // Test backend uses a single payment, so always use /api/payment/status
+  const url = `${apiConfig.apiUrl}/api/payment/status`;
     
   const res = await fetch(url, {
     headers: getHeaders(),
