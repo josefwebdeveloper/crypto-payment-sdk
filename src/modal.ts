@@ -174,12 +174,13 @@ export function openModal(
   };
   window.addEventListener('message', handleMessage);
 
-  // When iframe loads, send init data
+  // When iframe loads, send init data (without callbacks - they can't be cloned)
   iframe.addEventListener('load', () => {
+    const { onSuccess, onClose, onError, onExpire, ...serializableOptions } = options;
     iframe.contentWindow?.postMessage(
       {
         type: 'CRYPTO_PAY_INIT',
-        payload: options,
+        payload: serializableOptions,
       } as WidgetMessage,
       '*'
     );
